@@ -1,0 +1,30 @@
+1，产生原因：父进程先退出，子进程循环（子进程有1号进程领养）
+二，模拟实现一个僵尸进程
+test.c文件
+
+#include<stdio.h>
+#include<unistd.h>
+#include<stdlib.h>
+
+int main(viod)
+{
+    pid_t id=fork();
+    if(id==-1)
+    {
+        printf("fork error!!!\n");
+    }
+    else if(id==0)//child
+    {
+        printf("child pid is:%d, father id is:%d\n",getpid(),getppid());
+        sleep(3);
+    }
+    else//father
+    {
+        printf("father pid is:%d ,child  id is:%d\n",getpid(),getppid());
+    }
+    return 0;
+}
+
+运行该程序
+gcc test.c -o test
+./test
