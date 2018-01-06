@@ -1,0 +1,81 @@
+#include<iostream>
+using namespace std;
+template<class T>
+class Stack
+{
+public:
+    Stack()
+        : _array(new T[3])
+        , _size(0)
+        , _capacity(3)
+    {}
+
+    void Push(const T& data)
+    {
+        _CheckCapacity();
+        _array[_size] = data;
+        _size++;
+    }
+    void Pop()
+    {
+        if (Empty())
+        _size--;
+    }
+    T& Top()
+    {
+        return _array[_size - 1];
+    }
+    const T& Top()const
+    {
+        return _array[_size - 1];
+    }
+    size_t Size()const
+    {
+        return _size;
+    }
+    bool Empty()const
+    {
+        return _size!=0?true:false;
+    }
+    ~Stack()
+    {
+        if (_array)
+            delete[] _array;
+    }
+private:
+    void _CheckCapacity()
+    {
+        if (_size == _capacity)
+        {
+            T* temp = new T[2 * _size + 3];
+            //swep(_array, temp);
+            for (int i = 0; i < _size; i++)
+            {
+                temp[i] = _array[i];
+            }
+            delete[] _array;
+            _array = temp;
+            temp = NULL;
+            _capacity = 2 * _size + 3;
+        }
+    }
+private:
+    T* _array;
+    size_t _capacity;
+    size_t _size;
+};
+int main(void)
+{
+    Stack<int> array;
+    array.Push(1);
+    array.Push(2);
+    array.Push(3);
+    array.Push(4);
+    array.Size();
+    cout<<array.Empty() << endl;
+    array.Pop();
+    cout << array.Top() << endl;
+    array.Size();
+    return 0;
+
+}
