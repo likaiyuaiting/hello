@@ -1,0 +1,36 @@
+typedef int BTSTDataType;
+
+typedef struct BinaryTreeNode
+{
+    struct BinaryTreeNode* _left;
+    struct BinaryTreeNode* _right;
+    BTSTDataType _data;
+}BTNode;
+
+BTNode* BuyBTNode(BTSTDataType x)
+{
+    BTNode* node = (BTNode*)malloc(sizeof(BTNode));
+    assert(node != NULL);
+
+    node->_left = NULL;
+    node->_right = NULL;
+    node->_data = x;
+
+    return node;
+}
+
+BTNode* CreateBTree(BTSTDataType* a, size_t* pIndex, BTSTDataType invalid)// 创建二叉树
+{
+    BTNode* root = NULL;
+
+    if (a[*pIndex] != invalid)
+    {
+        root = BuyBTNode(a[*pIndex]);
+        (*pIndex)++;
+        root->_left = CreateBTree(a, pIndex, invalid);
+        (*pIndex)++;
+        root->_right = CreateBTree(a, pIndex, invalid);
+    }
+
+    return root;
+}
