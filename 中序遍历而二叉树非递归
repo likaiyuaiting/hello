@@ -1,0 +1,40 @@
+
+    首先 1、2、3依次入栈；
+    访问3的左孩子，为NULL，跳出内层循环，top = 3；
+    输出3，prev = 3，节点3出栈；
+    top = 2，跳过if进入else，cur = 4；
+    4入栈，cur = NULL，top = 4，prev = 4，4出栈；
+    top = 2，进入if，输出2，prev = 2，2出栈；
+    ……………….
+void BTreePostOrderNonR(BTNode* w)
+{
+    Stack s;
+    StackInit(&s);
+    BTNode* cur = root;
+    BTNode* top = NULL;
+    BTNode* prev = NULL;//z
+
+    while (cur != NULL || StackEmpty(&s) != 0)
+    {
+        while (cur != NULL)
+        {
+            StackPush(&s, cur);
+            cur = cur->_left;
+        }
+
+        top = StackTop(&s); 
+        //判断top的右树有没有访问过
+
+        if (NULL == top->_right || top->_right == prev)
+        {
+            printf("%d ", top->_data);
+            prev = top;
+            StackPop(&s);
+        }
+        else
+        {
+            //右子树还没有访问过，子问题方式访问
+            cur = top->_right;
+        }
+    }
+}
