@@ -1,0 +1,45 @@
+int IsCompleteBTree1(BTNode* root)// flag的方式判断  非递归遍历 
+{
+    Queue q;
+    QueueInit(&q);
+    int flag = 1;
+
+    if (root != NULL)
+    {
+        QueuePush(&q, root);
+    }
+    while (QueueEmpty(&q) != 0)
+    {
+        BTNode* front = QueueFront(&q);
+        QueuePop(&q);
+
+        if (front->_left != NULL)
+        {
+            if (0 == flag)
+            {
+                return 0;
+            }
+
+            QueuePush(&q, front->_left);
+        }
+        else
+        {
+            flag = 0;
+        }
+
+        if (front->_right != NULL)
+        {
+            if (0 == flag)
+            {
+                return 0;
+            }
+
+            QueuePush(&q, front->_right);
+        }
+        else
+        {
+            flag = 0;
+        }
+    }
+    return 1;
+}
