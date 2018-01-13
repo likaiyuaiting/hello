@@ -1,0 +1,78 @@
+
+    创建一个栈s并初始化；
+    从树根开始，把1，2，3依次入栈并输出；
+    访问3的左孩子时，它为NULL，内层循环结束；
+    3出栈，访问3的右孩子；
+    ………….
+void BTreePrevOrderNonR(BTNode* root)
+{
+    Stack s;
+    StackInit(&s);
+    BTNode* top = NULL;
+    BTNode* cur = root;
+
+    while (cur != NULL || StackEmpty(&s) != 0)
+    {
+        while (cur != NULL)
+        {
+            printf("%d ", cur->_data);
+            StackPush(&s, cur);
+            cur = cur->_left;
+        }
+
+        top = StackTop(&s);
+        StackPop(&s);
+
+        cur = top->_right; //子问题
+    }
+}
+
+    1
+    2
+    3
+    4
+    5
+    6
+    7
+    8
+    9
+    10
+    11
+    12
+    13
+    14
+    15
+    16
+    17
+    18
+    19
+    20
+    21
+    22
+
+3.中序遍历（非递归法）
+
+    思路：和上一题大致相同，只是改变了输出函数的位置。
+
+void BTreeInOrderNonR(BTNode* root)
+{
+    Stack s;
+    StackInit(&s);
+    BTNode* top = NULL;
+    BTNode* cur = root;
+
+    while (cur != NULL || StackEmpty(&s) != 0)
+    {
+        while (cur != NULL)
+        {
+            StackPush(&s, cur);
+            cur = cur->_left;
+        }
+
+        top = StackTop(&s);
+        printf("%d ", top->_data);
+        StackPop(&s);
+
+        cur = top->_right;
+    }
+}
