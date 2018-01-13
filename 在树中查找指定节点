@@ -1,0 +1,26 @@
+BTNode* BTreeFind(BTNode* root, BTSTDataType x)
+{
+    if (NULL == root)
+    {
+        return NULL;
+    }
+
+    if (x == root->_data)
+    {
+        return root;
+    }
+
+    BTNode* leftRet = BTreeFind(root->_left, x);
+    if (leftRet != NULL)
+    {
+        return leftRet;
+    }
+
+    BTNode* rightRet = BTreeFind(root->_right, x);
+    if (rightRet != NULL)
+    {
+        return rightRet;
+    }
+
+    return NULL;
+}
