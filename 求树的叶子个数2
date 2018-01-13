@@ -1,0 +1,14 @@
+size_t BTreeLeafSize(BTNode* root) //计算树叶子的数量
+{
+    if (NULL == root)
+    {
+        return 0;
+    }
+
+    if (root->_left == NULL && root->_right == NULL)
+    {
+        return 1;
+    }
+
+    return BTreeLeafSize(root->_left) + BTreeLeafSize(root->_right);
+}
