@@ -1,0 +1,11 @@
+思路：一棵树的节点个数 = 它左子树节点个数 + 它右子树节点个数 + 加它本身
+
+size_t BTreeSize(BTNode* root)//节点个数
+{
+    if (NULL == root)
+    {
+        return 0;
+    }
+    //转换成子问题：树节点个数等于左子树节点个数 + 右子树节点个数 + 加自己
+    return BTreeSize(root->_left) + BTreeSize(root->_right) + 1;
+}
