@@ -1,0 +1,12 @@
+size_t BTreeDepth(BTNode* root)
+{
+    if (NULL == root)
+    {
+        return 0;
+    }
+
+    size_t leftDepth = BTreeDepth(root->_left);
+    size_t rightDepth = BTreeDepth(root->_right);
+    //树的深度 = 它左右两个子树深度较大的那个 + 1；
+    return leftDepth > rightDepth ? leftDepth + 1 : rightDepth + 1;
+}
