@@ -1,0 +1,191 @@
+//二叉查找树/二叉排序树/二叉搜索树---->  BST 
+
+
+//基本操作:查找、插入、建树、删除。
+
+
+
+
+//search 函数查找二叉查找树中数据域为x的结点
+
+void search(node* root,int x)
+{
+    if(root == NULL)
+    {
+        printf("search failed\n");
+        return;
+    }
+
+    if(x==root->data)       //查找成功，访问 
+    {
+        printf("%d\n",root->data);
+
+    }
+    else if(x<root->data)
+    {
+        search(root->lchild,x);     //往左子树递归搜索x 
+
+    }
+    else
+    {
+        search(root->rchild,x);     //往右子树递归搜索x 
+
+    } 
+
+
+
+
+
+} 
+
+
+//insert函数将在二叉树中插入一个数据域为x的新结点（注意参数root 要加引用&） 
+
+void insert(node* &root,int x)
+{
+    if(root==NULL)      //空树，说明查找失败，也就是插入位置 
+    {
+        root=new_node(x);
+        return;
+
+    }
+
+    if(x==root->data)   //查找成功，说明结点已存在，直接返回 
+    {
+        return;
+
+
+    }
+    else if(x<root->data)       //如果x比根结点的数据域小，说明x需要插在左子树中 
+    {
+
+        insert(root->lchild,x);
+
+    }
+    else
+    {
+
+        insert(root->rchild,x); 
+
+    } 
+}
+
+
+//二叉查找树的建立
+
+
+node* create(int data[],int n) 
+{
+    node* root=NULL;    //新建根结点root 
+
+    for(int i=0;i<n;i++)
+    {
+        insert(root,data[i]);   //将data[0]~data[n-1]插入二叉查找树中 
+
+
+    }
+
+    return root; 
+
+
+}
+
+
+//寻找以root为根结点的树中的最大权值结点
+
+
+
+node* find_max(node* root) 
+{
+
+    while(root->rchild !=NULL)
+    {
+
+        root=root->rchild; 
+
+    }
+
+    return root;
+
+}
+
+
+
+//寻找以root为结点的树中的最小权值点
+
+
+
+node* find_min(node* root) 
+{
+    while(root->lchild!=NULL)
+    {
+        root=root->lchild;
+
+    }
+
+    return root;
+
+
+
+}
+
+//删除以root为根结点的树中权值x的结点
+//两种方案：1.以x的前驱代替x，并且删除x的前驱；
+//          2.以x的后继代替x，并且删除x的后继； 
+
+
+
+void delete_node(node* &root,int x)
+{
+    if(root==NULL)      //不存在权值为x的结点 
+    {
+        return;
+
+    }
+
+    if(root->data==x)       //找到想要删除的结点 
+    {
+
+        if(root->lchild==NULL && root->rchild ==NULL)   //是叶子结点，直接删除 
+        {
+            root=NULL;      //把root地址设为NULL，父结点就引用不到它了。 
+
+        }
+        else if(root->lchild != NULL) 
+        {
+            node* pre=find_max(root->lchild);   //root前驱等于root左子树中的最大值结点 
+
+            root->data=pre->data;   //用前驱覆盖root 
+
+            delete_node(root->lchild,pre->data);    //递归删除前驱，弥补漏洞。 
+
+
+        } 
+        else
+        {
+            node* next=find_min(root->rchild);  //root后继等于root右子树中的最小值结点 
+
+            root->data=next->data;
+
+            delete_node(root->rchild,next->data);   //弥补后继元素的漏洞 
+
+
+
+        } 
+    }
+    else if(root->data > x)
+    {
+        delete_node(root->lchild,x);    //在左子树删除x 
+
+
+    }
+    else
+    {
+
+        delete_node(root->rchild,x);    //往右子树删除x 
+
+    }
+
+}
+
+
