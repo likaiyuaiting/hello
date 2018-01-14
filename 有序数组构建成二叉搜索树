@@ -1,0 +1,109 @@
+降序储存和顺序储存都会得到退化树。最有效保持树平衡的是，取数组中值（对于无重复元素的有序数组，中值就是数组中间元素）作为树根的值，
+将数组分为左右两个子数组，左子数组的数值均小于根节点，右子数组的值均大于根节点。
+将左子数组的中间元素作为根节点的左子树，将右子树的中间元素作为根节点的右子树，由此，形成递归关系，就能得到平衡的二叉搜索树。
+    package cc.binarytree;  
+      
+    /*  
+     * 二叉查找树 Int       
+     *   
+     */  
+    import java.util.*;  
+      
+    public class IntSearchTree {  
+        private IntTreeNode overallRoot;//根节点  
+          
+        public IntSearchTree(){  
+            overallRoot=null;//空树  
+        }  
+        //构建二叉搜索树：  
+        //输入：有序数组   
+        //返回值: 无  
+        public IntSearchTree(int[] a){  
+            overallRoot=buildTree(overallRoot,a,0,a.length-1);  
+        }  
+        //函数：构建二叉搜索树  
+        //输入：树根引用，数组，数组索引 0到a.length-1  
+        //返回值：节点引用  
+        private IntTreeNode buildTree(IntTreeNode root,int[] a,int start,int end){  
+            if(start>end){  
+                return null;//数组索引交叉，说明已经反问完该数组，退出递归  
+            }else{  
+                int m=(start+end)/2;  
+                root=new IntTreeNode(a[m]);  
+                root.left=buildTree(root.left,a,start,m-1);  
+                root.right=buildTree(root.right,a,m+1,end);  
+            }  
+            return root;  
+        }  
+        //添加元素  
+        public void add(int value){  
+            overallRoot=add(overallRoot,value);  
+        }  
+        private IntTreeNode add(IntTreeNode root,int value){  
+            if(root==null){  
+                root=new IntTreeNode(value);  
+            }else if(value<=root.data){  
+                root.left=add(root.left,value);  
+            }else{  
+                root.right=add(root.right,value);  
+            }  
+            return root;  
+        }  
+        //搜索元素 返回值类型boolean true：存在 false：不存在  
+        public boolean contain(int element){  
+            return contain(overallRoot,element);  
+        }  
+        private boolean contain(IntTreeNode root,int element){  
+            if(root==null){  
+                return false;  
+            }else if(root.data==element){  
+                return true;  
+            }else if(root.data>element){  
+                return contain(root.left,element);  
+            }else{  
+                return contain(root.right,element);  
+            }         
+        }  
+        //中序遍历二叉树  
+        public void printInOrder(){  
+            System.out.println("InOrder:  ");  
+            printInOrder(overallRoot);  
+            System.out.println();  
+        }  
+        private void printInOrder(IntTreeNode root){  
+            if(root!=null){  
+                printInOrder(root.left);  
+                System.out.print(root.data+" ");  
+                printInOrder(root.right);  
+                  
+            }  
+        }  
+        //打印出二叉树结构  
+        public void printSideWays(){  
+            System.out.println("BinaryTree Structure: ");  
+            printSideWays(0,overallRoot);  
+        }  
+        private void printSideWays(int level,IntTreeNode root){  
+            if(root!=null){  
+                  
+                printSideWays(level+1,root.right);  
+                for(int i=0;i<level;i++){  
+                    System.out.print("     ");  
+                }  
+                System.out.print(root.data+"\n");  
+                printSideWays(level+1,root.left);  
+            }  
+        }  
+        public static void main(String[] args) {  
+            int[] a=new int[63];  
+            for(int i=0;i<63;i++){  
+                a[i]=2*i+1;  
+            }  
+            IntSearchTree tree=new IntSearchTree(a);//输入有序数组构建二叉树  
+            tree.printSideWays();  
+            tree.printInOrder();  
+            System.out.println("numbers contian 30?: "+tree.contain(30));     
+            System.out.println("numbers contian 99?: "+tree.contain(99));  
+        }  
+      
+    }  
