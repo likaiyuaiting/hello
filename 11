@@ -1,0 +1,25 @@
+#include<iostream>
+using namespace std;
+class AAA
+{
+public:
+    int Add(int x,int y)
+    {
+        return x+y;
+    }
+    float Add(float x,float y)
+    {
+        return x+y;
+    }
+    char Add(char x,char y)
+    {
+        return x+y;
+    }
+    int Add(int x,char y)
+    {
+        return x+y;
+    }
+    //......
+    //我们发现同样是加法函数，我们多重载不完，大量的冗余代码也出来了；
+    //重载可用于方法少的地方，当我们自己都不知道有多少中的不适合重载
+}
