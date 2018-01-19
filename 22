@@ -1,0 +1,289 @@
+#include<iostream>
+using namespace std;
+
+template <class T>
+struct ListNode
+{
+    ListNode(const T& data = T())
+    : _pNext(NULL)
+    , _pPre(NULL)
+    , _data(data)
+    {}
+
+    ListNode<T>* _pNext;// 模板类下类型表示为：ListNode<T>
+    ListNode<T>* _pPre;
+    T _data;
+};
+#if 1  //对一些基本操作的重载。(++,--，!=,*,->)
+// 参考下list的迭代器
+template <class T>
+class ListIterator
+{
+    typedef ListNode<T>* PNode;
+    typedef ListNode<T> Node;
+    typedef ListIterator Self;
+public:
+    ListIterator()
+        : _pCur(NULL)
+    {}
+
+    ListIterator(PNode pCur)
+        : _pCur(pCur)
+    {}
+
+    ListIterator(const Self& s)
+        : _pCur(s._pCur)
+    {}
+
+    Self& operator++()
+    {
+        _pCur = _pCur->_pNext;
+        return *this;
+    }
+
+    Self operator++(int)
+    {
+        Self temp(*this);
+        _pCur = _pCur->_pNext;
+        return temp;
+    }
+
+    Self& operator--()
+    {
+        _pCur = _pCur->_pPre;
+        return *this;
+    }
+
+    Self operator--(int)
+    {
+        Self temp(*this);
+        _pCur = _pCur->_pPre;
+        return *this;
+    }
+
+    bool operator!=(const Self& s)
+    {
+        return _pCur != s._pCur;
+    }
+
+    bool operator==(const Self& s)
+    {
+        return _pCur == s._pCur;
+    }
+
+    T& operator*()
+    {
+        return _pCur->_data;
+    }
+
+    T* operator->()
+    {
+        return &(_pCur->_data);
+    }
+private:
+    PNode _pCur;
+};
+#endif
+
+template<class T>
+class List
+{
+    typedef ListNode<T> Node;
+    typedef Node* PNode;
+
+public:
+    typedef ListIterator<T> Iterator;
+public:
+    List()//无参时，建立链表的头结点（空链表）
+    {
+         CreateListHead();//建立链表的头结点
+    }
+
+    List(T* array, size_t size)//有参时，传类型，传个数，传元素（以数组的方式传）
+    {
+        CreateListHead();//先有一个表头结点
+        for (int i = 0; i < size; i++)//不用memcpy函数：会产生浅拷贝
+        {
+            PushBack(array[i]);//尾插元素
+        }
+    }
+
+    List(const List& l)//拷贝构造函数：深拷贝方式
+    {
+        _phead = new Node;
+        PNode ptail = l->pNext;
+        while (ptail == l)
+        {
+            PushBack(ptail->data);
+            ptail = ptail->pNext;
+        }
+    }
+    List& operator=(const List& l)//赋值运算符重载
+    {
+        if (this == &l)
+        {
+            return *this;
+        }
+        _phead = new Node;
+        PNode ptail = l->pNext;
+        while (ptail == l)
+        {
+            PushBack(ptail->data);
+            ptail = ptail->pNext;
+        }
+
+    }
+    ~List()
+    {
+        Clear();//清空链表中的元素，表头结点还在
+        delete _pHead;
+        _pHead = NULL;
+    }
+
+        ///////////////////////////////////////////////
+    Iterator Begin()//获取第一个元素地址
+    {
+        return Iterator(_pHead->_pNext);
+    }
+
+    Iterator End()//获取表头元素地址
+    {
+        return Iterator(_pHead);
+    }
+
+    void PushBack(const T& data)
+    {
+        PNode ptail = _pHead->_pPre;
+
+        PNode pNewNode = new Node(data);
+        ptail->_pNext = pNewNode;
+        pNewNode->_pNext = _pHead;
+        pNewNode->_pPre = ptail;
+        _pHead->_pPre = pNewNode;
+    }
+    void PopBack()
+    {
+        PNode ptail = _pHead->_pPre;
+
+        ptail->_pPre->_pNext =_pHead;
+        _pHead->_pPre = ptail->_pPre;
+        delete ptail;
+    }
+    void PushFront(const T& data)
+    {
+        PNode ptail = new Node(data);
+
+        ptail->_pNext = _pHead->_pNext;
+        -pHead->_pNext->_pPre = ptail;
+        ptail->_pPre = _pHead;
+        _pHead->_pNext = ptail;
+    }
+    void PopFront()
+    {
+        if (_pHead->_pNext == _phead)
+            return;
+        else
+        {
+            PNode ptail = _pHead->_pNext;
+            _pHead->_pNext = ptail->_pNext;
+            ptail->_pNext->pPre = _pHead;
+            delete ptail;
+        }
+    }
+    PNode Insert(PNode pos, const T& data)
+    {
+        PNode ptail = pos->_pPre;
+        PNode pNewNode = new Node(data);
+        pNewNode->_pNext = ptail;
+        ptail->_pPre = pNewNode;
+        pos->_pNext = pNewNode;
+        pNewNode->_pPre = pos;
+    }
+    PNode Erase(PNode pos)
+    {
+        pos->_pPre->_pNext = pos->_pNext;
+        pos->_pNest->pPre = pos->_pPre;
+        delete pos;
+    }
+
+    size_t Size()
+    {
+        int count = 0;
+        PNode ptail = _pHead->_pNext;
+        while (ptail != _pHead)
+        {
+            count++;
+            ptail = ptail->_pNext;
+        }
+        return count;
+    }
+        // 将链表中的结点清空
+    void Clear()
+    {
+        PNode ptail = _pHead->_pNext;
+        while (ptail != _pHead)
+        {
+            _pHead->_pNext = ptail->_pNext;
+            delete ptail;
+            ptail = _pHead->_pNext;
+        }
+        ptail->_pPre = _pHead;
+    }
+    bool Empty()const
+    {
+        return _pHead->_pNext - _pHead;
+    }
+private:
+    void CreateListHead()
+    {
+        _pHead = new Node;
+        _pHead->_pNext = _pHead;
+        _pHead->_pPre = _pHead;
+    }
+
+private:
+    PNode _pHead;
+};
+
+template <class Iterator>
+Iterator Find(Iterator start, Iterator finish,const T& data)
+{
+    while (start != finish)
+    {
+        if (*start == data)
+            return start;
+        ++start;
+
+    }
+    return start;
+}
+int main(void)
+{
+    size_t i;
+    List<int> l1;
+    l1.PushBack(1);
+    l1.PushBack(2);
+    l1.PushBack(3);
+    l1.PushBack(4);
+    l1.PopBack();
+
+    //打印元素
+    List<int>::Iterator it = l1.Begin();
+    while (l1.End() != it)
+    {
+        cout << *it << "  ";
+        ++it;
+    }
+    cout<<endl;
+    i = l1.Size();
+    cout << l1.Empty() << endl;
+    cout << i << endl;
+    l1.Clear();
+    l1.~List();
+    //此函数后的调用无效；对象不存在；会崩溃
+    cout << l1.Empty() << endl;
+    i = l1.Size();
+    cout << i << endl;
+
+    return 0;
+}
