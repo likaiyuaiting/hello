@@ -10,5 +10,6 @@ size_t BTreeKLevelSize(BTNode* root, size_t k)
         return 1;
     }
 
+
     return BTreeKLevelSize(root->_left, k - 1) + BTreeKLevelSize(root->_right, k - 1);
 }
