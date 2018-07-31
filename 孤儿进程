@@ -15,6 +15,7 @@ int main(viod)
     }
     else if(id==0)//child
     {
+    
         printf("child pid is:%d, father id is:%d\n",getpid(),getppid());
         sleep(3);
     }
