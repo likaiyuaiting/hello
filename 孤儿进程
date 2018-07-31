@@ -20,6 +20,7 @@ int main(viod)
     }
     else//father
     {
+    
         printf("father pid is:%d ,child  id is:%d\n",getpid(),getppid());
     }
     return 0;
